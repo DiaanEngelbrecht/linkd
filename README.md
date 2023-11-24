@@ -25,7 +25,6 @@ enum Messages {
     Ping,
 }
 
-#[derive(PartialEq)]
 enum Responses {
     Pong,
 }
