@@ -119,6 +119,9 @@ mod tests {
     use crate::{Actor, Handler, registry::Registry, Registerable};
     use async_trait::async_trait;
 
+
+    type TestActor = Actor::<MyState, Messages, Responses>;
+
     struct MyState;
 
     enum Messages {
@@ -150,11 +153,11 @@ mod tests {
     async fn create_actor_call_and_cast() {
         let mut registry = Registry::new();
 
-        let mut background_worker = Actor::<MyState, Messages, Responses>::new();
+        let mut background_worker = TestActor::new();
         background_worker.startup(MyState {}).await;
         background_worker.register(&mut registry);
         
-        let local_ref = Actor::<MyState, Messages, Responses>::fetch_from_registry(&registry);
+        let local_ref = TestActor::fetch_from_registry(&registry);
         let res = local_ref.call(Messages::V4).await;
         let res_next = local_ref.call(Messages::V6).await;
 

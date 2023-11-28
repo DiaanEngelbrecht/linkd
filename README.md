@@ -1,8 +1,8 @@
 # Linkd
 
-A simple actor model framework that takes inspiration from OTP in the erlang ecosystem.
+A simple lightweight actor model framework that takes inspiration from OTP in the erlang ecosystem.
 
-Linkd is a high level abstraction that focuses more on high level features. It assumes you call it inside an async tokio runtime.
+Linkd focuses more on high level features. It assumes you call it inside an async tokio runtime.
 
 ## Getting started
 
@@ -18,6 +18,8 @@ Below is a simple actor that can get pinged, and will respond with pong.
 ```rust
 use async_trait::async_trait;
 use linkd::{Actor, Handler};
+
+type HealthActor = Actor::<MyState, Messages, Responses>;
 
 struct MyState;
 
@@ -45,18 +47,28 @@ impl Handler<MyState, Responses> for Messages {
 
 #[tokio::main]
 async fn main() {
+
+    // Create a registry(optional)
+    let mut registry = Registry::new();
+
     // Initialize the actor and immediately start it up
-    let mut my_actor = Actor::new();
+    let mut my_actor = HealthActor::new();
     my_actor.startup(MyState {}).await;
+    // Move the actor to the registry
+    my_actor.register(&mut registry);
+  
+
+    // Go fetch the actor out of the registry from anywhere.
+    let local_ref = HealthActor::fetch_from_registry(&registry);
 
     // Call out to the actor and wait for a response.
-    let response = my_actor.call(Messages::V4).await;
+    let response = local_ref.call(Messages::Ping).await;
     
     if response == Responses::Pong {
         println!("Would you look at that!");
     }
 
-    // Cast a message to the actor. This is fire and forget.
-    my_actor.cast(Messages::V4).await;
+    // Cast a message to the actor. This is akin to a fire and forget.
+    local_ref.cast(Messages::V4).await;
 }
 ```
