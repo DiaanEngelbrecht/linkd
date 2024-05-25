@@ -111,7 +111,7 @@ impl<
 
 #[async_trait]
 pub trait Handler<State, Responses> {
-    async fn handle(&self, state: &State) -> Responses;
+    async fn handle(&self, state: &mut State) -> Responses;
 }
 
 #[cfg(test)]
@@ -137,7 +137,7 @@ mod tests {
 
     #[async_trait]
     impl Handler<MyState, Responses> for Messages {
-        async fn handle(&self, _state: &MyState) -> Responses {
+        async fn handle(&self, _state: &mut MyState) -> Responses {
             match self {
                 Messages::V4 => {
                     println!("Hello darkness my old friend");

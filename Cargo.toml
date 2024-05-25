@@ -1,6 +1,6 @@
 [package]
 name = "linkd"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 license = "MIT"
 description = "A simple actor model framework that takes inspiration from OTP in the erlang ecosystem."

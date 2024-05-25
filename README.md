@@ -33,7 +33,7 @@ enum Responses {
 
 #[async_trait]
 impl Handler<MyState, Responses> for Messages {
-    async fn handle(&self, _state: &MyState) -> Responses {
+    async fn handle(&self, _state: &mut MyState) -> Responses {
         match self {
             Messages::Ping => {
                 println!("Hello darkness my old friend.");
