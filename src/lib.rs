@@ -30,7 +30,7 @@ impl<
         Responses: Send + 'static,
     > Actor<State, Messages, Responses>
 {
-    fn new() -> Self {
+    pub fn new() -> Self {
         let (tx, rx) = mpsc::channel::<(Messages, Option<oneshot::Sender<Responses>>)>(100);
         Self {
             incoming_tx: Some(tx),
@@ -39,7 +39,7 @@ impl<
         }
     }
 
-    async fn startup(&mut self, state: State) {
+    pub async fn startup(&mut self, state: State) {
         let mut rx = self
             .incoming_rx
             .take()
@@ -57,7 +57,7 @@ impl<
         });
     }
 
-    async fn call(&self, message: Messages) -> Result<Responses, oneshot::error::RecvError> {
+    pub async fn call(&self, message: Messages) -> Result<Responses, oneshot::error::RecvError> {
         let (tx, rx) = oneshot::channel::<Responses>();
 
         let _ = self
@@ -70,7 +70,7 @@ impl<
         rx.await
     }
 
-    async fn cast(&self, message: Messages) {
+    pub async fn cast(&self, message: Messages) {
         let _ = self
             .incoming_tx
             .as_ref()

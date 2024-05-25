@@ -4,8 +4,6 @@ use std::{
     sync::Arc,
 };
 
-use crate::Registerable;
-
 pub type MapValue = Arc<dyn Any + Send + Sync>;
 
 pub struct Registry {
